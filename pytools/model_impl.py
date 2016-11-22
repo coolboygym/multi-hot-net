@@ -33,3 +33,19 @@ class LogisticRegression(TFModel):
         if self.l2_reg is not None:
             self.loss += self.l2_reg * tf.nn.l2_loss(w)
         self.optimizer = optimize(self.opt_algo, self.learning_rate, self.loss)
+
+
+class MultiHotNet(TFModel):
+    def __init__(self, name=None, mtype=None, eval_metrix=None, path=None, X_data=None, y_data=None, vars_init=None,
+                 init_path=None, l2_reg=None, opt_algo='gd', learning_rate=0.01):
+        TFModel.__init__(self, name, mtype, eval_metrix, path, X_data, y_data)
+        self.vars_meta = init_vars_meta()
+        self.vars_meta['init_path'] = init_path
+        self.vars_init = vars_init
+        self.init_path = init_path
+        self.l2_reg = l2_reg
+        self.opt_algo = opt_algo
+        self.learning_rate = learning_rate
+        pass
+
+

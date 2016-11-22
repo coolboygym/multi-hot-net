@@ -1,0 +1,81 @@
+{
+	"field": [
+			"name": "click"
+
+			"name": "weekday"
+			"name": "hour"
+			"name": "bidid"
+			"name": "time_day"
+			"name": "logtype"
+			"name": "ipinyouid"
+			"name": "user_agent_os"
+			"name": "user_agent_browser"
+			"name": "IP0"
+			"name": "IP1"
+			"name": "IP2"
+			"name": "region"
+			"name": "city"
+			"name": "adexchange"
+			"name": "domain"
+			"name": "url"
+			"name": "urlid"
+			"name": "slotid"
+			"name": "slotwidth"
+			"name": "slotheight"
+			"name": "slotvisibility"
+			"name": "slotformat"
+			"name": "slotprice"
+			"name": "creative"
+			"name": "bidprice"
+			"name": "payprice"
+			"name": "keypage"
+			"name": "advertiser"
+
+			"name": "usertag"
+	]
+}
+
+size of each field(30 fields) after index(0):
+[     2      7     24 862483     10      1 838963      6      9    218
+    256    256     35    370      3   8269 265002      1  22679      8
+      5      4      2    132      8      1    299      1      1     67]
+
+size of each field(30 fields) after index(5):
+[    2     7    24     2    10     1    14     6     9   201   256   256
+    35   369     3  2656 18568     1  4601     8     5     4     2    83
+     8     1   299     1     1    67]
+
+
+size of each field in train0_clean:
+[  7  24  10   6   9  35 370   3   8   5   4   2 132   8 299]
+
+
+
+[[   0    0    0    0    0]
+ [   1    1    1    1    1]
+ [   2    2    2    2    2]
+ ...,
+ [9997 9997 9997 9997 9997]
+ [9998 9998 9998 9998 9998]
+ [9999 9999 9999 9999 9999]]
+[[ 5 26 47 68 89]
+ [ 5 26 47 68 89]
+ [10 31 52 73 94]
+ ...,
+ [ 7 28 49 70 91]
+ [14 35 56 77 98]
+ [ 0 21 42 63 84]]
+[[1 1 1 1 1]
+ [1 1 1 1 1]
+ [1 1 1 1 1]
+ ...,
+ [1 1 1 1 1]
+ [1 1 1 1 1]
+ [1 1 1 1 1]]
+[[0 0 0 ..., 0 0 0]
+ [0 0 0 ..., 0 0 0]
+ [0 0 0 ..., 0 0 0]
+ ...,
+ [0 0 0 ..., 0 0 0]
+ [0 0 0 ..., 0 1 0]
+ [1 0 0 ..., 0 0 0]]
