@@ -1,53 +1,57 @@
 {
 	"field": [
-			"name": "click"
+			"name": 0 "click"
 
-			"name": "weekday"
-			"name": "hour"
-			"name": "bidid"
-			"name": "time_day"
-			"name": "logtype"
-			"name": "ipinyouid"
-			"name": "user_agent_os"
-			"name": "user_agent_browser"
-			"name": "IP0"
-			"name": "IP1"
-			"name": "IP2"
-			"name": "region"
-			"name": "city"
-			"name": "adexchange"
-			"name": "domain"
-			"name": "url"
-			"name": "urlid"
-			"name": "slotid"
-			"name": "slotwidth"
-			"name": "slotheight"
-			"name": "slotvisibility"
-			"name": "slotformat"
-			"name": "slotprice"
-			"name": "creative"
-			"name": "bidprice"
-			"name": "payprice"
-			"name": "keypage"
-			"name": "advertiser"
+			"name": 1 "weekday"  #
+			"name": 2 "hour"     #
+			"name": 3 "bidid"
+			"name": 4 "time_day"
+			"name": 5 "logtype"
+			"name": 6 "ipinyouid"
+			"name": 7 "user_agent_os"       #
+			"name": 8 "user_agent_browser"  #
+			"name": 9 "IP0"                 #
+			"name": 10 "IP1"                #
+			"name": 11 "IP2"                #
+			"name": 12 "region"             #
+			"name": 13 "city"               #
+			"name": 14 "adexchange"         #
+			"name": 15 "domain"             #
+			"name": 16 "url"
+			"name": 17 "urlid"
+			"name": 18 "slotid"
+			"name": 19 "slotwidth"          #
+			"name": 20 "slotheight"         #
+			"name": 21 "slotvisibility"     #
+			"name": 22 "slotformat"         #
+			"name": 23 "slotprice"          #
+			"name": 24 "creative"           #
+			"name": 25 "bidprice"
+			"name": 26 "payprice"
+			"name": 27 "keypage"
+			"name": 28 "advertiser"
 
-			"name": "usertag"
+			"name": 29 "usertag"
 	]
 }
 
-size of each field(30 fields) after index(0):
+size of each field(30 fields) after nds(100) and index(0):
 [     2      7     24 862483     10      1 838963      6      9    218
     256    256     35    370      3   8269 265002      1  22679      8
       5      4      2    132      8      1    299      1      1     67]
 
-size of each field(30 fields) after index(5):
+size of each field(30 fields) after nds(100) and index(5):
 [    2     7    24     2    10     1    14     6     9   201   256   256
     35   369     3  2656 18568     1  4601     8     5     4     2    83
      8     1   299     1     1    67]
 
 
-size of each field in train0_clean:
-[  7  24  10   6   9  35 370   3   8   5   4   2 132   8 299]
+size and shift_size of each field in train0.embed: (index:0~9611)
+[    7    24     6     9   218   256   256    35   370     3  8269
+     8     5     4     2   132     8]
+
+[   0    7   31   37   46  264  520  776  811 1181 1184 9453 9461 9466 9470
+ 9472 9604]
 
 
 
@@ -79,3 +83,8 @@ size of each field in train0_clean:
  [0 0 0 ..., 0 0 0]
  [0 0 0 ..., 0 1 0]
  [1 0 0 ..., 0 0 0]]
+
+biggest numbers in the train.fm.txt:
+ [     1      9     36  13995 131313 131664 131682 131869 132683 133445
+ 133447 133451 133453 133455 133459 133464]
+

@@ -1,15 +1,19 @@
 import numpy as np
 import tensorflow as tf
+import time
+import pickle
 from scipy.sparse import csr_matrix
 
-field_numbers = 15
+batch_size = 100
+field_numbers = 17
+training_file = "../data/train0.embed.shuffle"
 
 # get the size of each field (for example, size of weekday is 7)
 def get_field_size(filename, field_number, full_data):
     with open(filename) as fin:
         arr = np.zeros((field_number,), dtype=np.int)  # size of each field
         for line in fin:
-            nums = line.strip().split('\t')
+            nums = line.strip().split()
             if full_data:
                 for i in range(len(nums) - 1):  # the last field is multi-hot
                     if int(nums[i]) > arr[i]:
@@ -26,7 +30,7 @@ def get_field_size(filename, field_number, full_data):
                         arr[i] = int(nums[i])
     total_size = 0
     for i in range(len(arr)):
-        arr[i] += 1
+        arr[i] += 1  # from index number to field size
         total_size += arr[i]
 
     shift_size_arr = np.array(range(len(arr)))
@@ -36,12 +40,6 @@ def get_field_size(filename, field_number, full_data):
         tmp += arr[i - 1]
         shift_size_arr[i] = tmp
     return total_size, arr, shift_size_arr
-
-cols_size, size_arr, shift_arr = get_field_size("../data/train0_clean", field_number=field_numbers, full_data=False)
-# print size_arr
-# print cols_size
-# print shift_arr
-# exit(0)
 
 def read_data(filename, field_number):
     line_number = 0
@@ -60,14 +58,35 @@ def read_data(filename, field_number):
             line_number += 1
     return line_number, data_cols
 
-item_numbers, cols = read_data("../data/train0_clean", field_number=field_numbers)
-rows = np.vstack([range(item_numbers) for _ in range(field_numbers)]).transpose()
+cols_size, size_arr, shift_arr = get_field_size(training_file, field_number=field_numbers, full_data=False)
+item_numbers, cols = read_data(training_file, field_number=field_numbers)
+# rows = np.vstack([range(item_numbers) for _ in range(field_numbers)]).transpose()
 cols += shift_arr
-# print rows
-# print cols
-# exit(0)
 data = np.ones_like(cols)
-data_full = csr_matrix((data.flatten(), (rows.flatten(), cols.flatten())), shape=[item_numbers, cols_size]).toarray()
+
+def get_batch_data(batch_id):
+    global cols, data, batch_size
+    batch_rows = np.vstack([range(batch_size) for _ in range(field_numbers)]).transpose()
+    data_batch = csr_matrix((data.flatten()[batch_id*batch_size*field_numbers:(batch_id+1)*batch_size*field_numbers],
+                             (batch_rows.flatten(),
+                              cols.flatten()[batch_id*batch_size*field_numbers:(batch_id+1)*batch_size*field_numbers])),
+                            shape=[batch_size, cols_size]).toarray()
+    return data_batch
+
+# ttt = get_batch_data(0)
+# print ttt
+# tt = get_batch_data(1)
+# print tt
+# for hj in range(cols_size):
+#     if ttt[0][hj] == 1:
+#         print hj,
+# print '\n'
+# for hj in range(cols_size):
+#     if tt[0][hj] == 1:
+#         print hj,
+# exit(0)
+
+# data_full = csr_matrix((data.flatten(), (rows.flatten(), cols.flatten())), shape=[item_numbers, cols_size]).toarray()
 
 # print rows
 # print cols
@@ -77,9 +96,9 @@ data_full = csr_matrix((data.flatten(), (rows.flatten(), cols.flatten())), shape
 graph = tf.Graph()
 
 # embedding size of each field
-# [  7  24  10   6   9  35 370   3   8   5   4   2 132   8 299]
-k = np.array([5, 10, 5, 5, 5, 15, 50, 2, 5, 2, 2, 2, 30, 5, 50])
-batch_size = 100
+# temp_k = [10 for _ in range(field_numbers)]
+temp_k = [5, 5, 5, 5, 10, 10, 10, 5, 10, 5, 40, 5, 5, 5, 5, 10, 5]
+k = np.array(temp_k)
 
 # size of each field's hidden layer
 hidden_size = np.array(range(field_numbers))
@@ -99,9 +118,14 @@ for ii in range(field_numbers):
             indexes[ii][temp_index] = jj
             temp_index += 1
 
+# print k
+# print hidden_size
+# print indexes
+# exit(0)
+
 # graph definition
 with graph.as_default():
-    embedding = [tf.Variable(tf.random_normal([size_arr[i], k[i]])) for i in range(field_numbers)]
+    embedding = [tf.Variable(tf.random_uniform([size_arr[i], k[i]], minval=-1, maxval=1)) for i in range(field_numbers)]
     inputs = [tf.placeholder(tf.float32, (batch_size, size_arr[i])) for i in range(field_numbers)]
     embed = [tf.nn.relu(tf.matmul(inputs[i], embedding[i])) for i in range(field_numbers)]
 
@@ -116,24 +140,28 @@ with graph.as_default():
     init = tf.initialize_all_variables()
 
 # train model
-num_round = 1000
+num_round = 300
 
 with tf.Session(graph=graph) as session:
     init.run()
     print("Initialized")
 
-    # average_loss = 0
     for i in range(num_round):
-        for j in range(item_numbers / batch_size):
-            batch_data = data_full[j * batch_size:(j + 1) * batch_size]
+        t_start = time.time()
+        for j in range(item_numbers / batch_size - 300):  # use last 200 batch for valid
+            batch_data = get_batch_data(j)
             feed_dict = {}
             for s in range(field_numbers):
                 feed_dict[inputs[s]] = batch_data[:, shift_arr[s]:(shift_arr[s]+size_arr[s])]
-            _, loss_val = session.run([optimizer, loss], feed_dict=feed_dict)
-            print loss_val
-            # average_loss = average_loss + loss_val
+            _, loss_train, embed_matrix = session.run([optimizer, loss, embedding], feed_dict=feed_dict)
+        print "num_round = ", i, "\ttrain_loss = ", loss_train, "\titer_time = ", time.time() - t_start
+        pickle.dump(embed_matrix, open("../log/embed_matrix_%d" % i, 'w'))
 
-        # if i > 0:
-        #     average_loss /= 1000
-        # print("Average loss at step ", i, ": ", average_loss)
-        # average_loss = 0
+        t_start_val = time.time()
+        for j in range(item_numbers / batch_size - 300, item_numbers / batch_size):
+            batch_data = get_batch_data(j)
+            feed_dict = {}
+            for s in range(field_numbers):
+                feed_dict[inputs[s]] = batch_data[:, shift_arr[s]:(shift_arr[s]+size_arr[s])]
+            loss_val = session.run([loss], feed_dict=feed_dict)
+        print "num_round = ", i, "\tvalid_loss = ", loss_val, "\titer_time = ", time.time() - t_start_val
