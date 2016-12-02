@@ -159,6 +159,6 @@ if __name__ == '__main__':
     # exit(0)
     # change_file_to_train("../data/train0", "../data/train0.fnn.train", field_to_delete, shift_array=lll)
 
-    generate_model_file(embed_file='../log/embed_matrix_200', result_file='../data/train0.fnn.model.200',
+    generate_model_file(embed_file='../log/embed_matrix_160', result_file='../data/train0.fnn.model.160',
                         total_size=total_sizes, name_field=inverse_dict)
     # generate_test_file('../data/test0.embed.clean.nds', '../data/test0.fnn.test', shift_arr)

@@ -45,11 +45,6 @@ with graph.as_default():
     x = [tf.matmul(h[i], w[i]) + b[i] for i in range(5)]
     l = [tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(x[i], inputs[i])) for i in range(5)]
 
-    # a0 = tf.Variable(0.2)
-    # a1 = tf.Variable(0.2)
-    # a2 = tf.Variable(0.2)
-    # a3 = tf.Variable(0.2)
-    # a4 = tf.Variable(0.2)
     a0 = 0.2
     a1 = 0.2
     a2 = 0.2
@@ -79,7 +74,3 @@ with tf.Session(graph=graph) as session:
             print loss_val
             average_loss = average_loss + loss_val
 
-        # if i > 0:
-        #     average_loss /= 1000
-        # print("Average loss at step ", i, ": ", average_loss)
-        # average_loss = 0
